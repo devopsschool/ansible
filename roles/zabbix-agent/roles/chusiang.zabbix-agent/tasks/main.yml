@@ -1,0 +1,24 @@
+#!/usr/bin/env ansible-playbook
+
+---
+
+- name: delegate to 'apt' system for installation
+  include: use-apt.yml
+  when: ansible_pkg_mgr == "apt"
+
+- name: delegate to 'yum' system for installation
+  include: use-yum.yml
+  when: ansible_pkg_mgr == "yum"
+
+- name: enable the zabbix-agent service
+  become: true
+  service:
+    name: zabbix-agent
+    enabled: yes
+
+- name: modify configure
+  become: true
+  template: src=templates/zabbix_agentd.conf.j2 dest=/etc/zabbix/zabbix_agentd.conf
+  notify: restart zabbix-agent
+
+# vim:ft=ansible:

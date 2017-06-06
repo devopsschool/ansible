@@ -1,0 +1,4 @@
+.vagrant/
+roles/
+build_result*
+setup.retry

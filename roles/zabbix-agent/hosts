@@ -1,0 +1,16 @@
+# This is the default ansible 'hosts' file.
+
+[webservers]
+ubuntu@192.168.233.128
+
+[server]
+ubuntu@192.168.233.131
+
+[agent]
+ubuntu@192.168.233.133
+
+[zabbix]
+ubuntu@192.168.233.134
+
+[windows]
+192.168.233.135
