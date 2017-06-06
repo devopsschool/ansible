@@ -1,0 +1,8 @@
+---
+- hosts: zabbix
+  become: yes
+  roles:
+     - { role: geerlingguy.mysql }
+     - { role: geerlingguy.apache }
+     - { role: dj-wasabi.zabbix-server, zabbix_url: zabbix.dj-wasabi.nl, database_type: mysql, database_type_long: mysql }   
+
