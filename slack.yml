@@ -1,0 +1,99 @@
+---
+- name: Test Slack Integration Module
+  hosts: "*"
+
+  vars:
+    - slack_domain: yourusername.slack.com
+    - slack_token: yourtoken
+
+  tasks:
+    - name: "It should arrive in the channel set in slack integration"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should arrive in the channel set in slack integration"
+
+    - name: "It should arrive in the #general channel"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should arrive in the #general channel"
+        channel: "#general"
+
+    - name: "It should arrive in the #general channel (set without #)"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should arrive in the #general channel (set without #)"
+        channel: "general"
+
+    - name: "It should have an altered username and icon"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should have an altered username and icon"
+        username: "Ansible ({{ inventory_hostname }})"
+        icon_url: "http://www.tuxpaint.org/stamps/stamps/animals/birds/cartoon/tux.png"
+
+    - name: "FAILED: It should have an altered username and icon"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should have an altered username and icon"
+        username: "Ansible ({{ inventory_hostname }})"
+        icon_emoji: ":ghost:"
+
+    - name: "It should contain a link"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should contain a <http://www.future500.nl|link>"
+
+    - name: "It should not link names/channels"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should not link names/channels #general @ramon"
+        link_names: 0
+
+    - name: "It should use 'none' parsing mode at Slack"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should use 'none' parsing mode at Slack #general\n<test>\nhttp://www.future500.nl\n@ramon"
+        link_names: 0
+        parse: 'none'
+
+    - name: "It should use full parsing mode at Slack"
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should use 'full' parsing mode at Slack #general\n<test>\nhttp://www.future500.nl\n@ramon"
+        parse: 'full'
+
+    - name: "It should fail on wrong choice for 'link_names' value"
+      ignore_errors: true
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should fail on wrong choice for 'link_names' value"
+        link_names: 'non-existant'
+
+    - name: "It should fail on wrong choice for 'parse' value"
+      ignore_errors: true
+      local_action:
+        module: slack
+        domain: "{{ slack_domain }}"
+        token: "{{ slack_token }}"
+        msg: "It should fail on wrong choice for 'parse' value"
+        parse: 'non-existant'
